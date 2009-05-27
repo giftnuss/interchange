@@ -1,8 +1,6 @@
 # Vend::Ship - Interchange shipping code
 # 
-# $Id: Ship.pm,v 2.29 2008-11-05 22:38:52 mheins Exp $
-#
-# Copyright (C) 2002-2008 Interchange Development Group
+# Copyright (C) 2002-2009 Interchange Development Group
 # Copyright (C) 1996-2002 Red Hat, Inc.
 #
 # This program was originally based on Vend 0.2 and 0.3
@@ -774,6 +772,7 @@ sub shipping {
 				logError($error_message);
 				last SHIPIT;
 			}
+			last SHIPIT unless defined $cost && $cost >= 0;
 			$final += $cost;
 			last SHIPIT unless $o->{continue};
 		}
@@ -1088,15 +1087,17 @@ sub tag_shipping {
 		### If no assignment has been made, we read the shipmodes
 		### and use their value
 		unless (defined $out) {
-			$out = 0;
 			for(@modes) {
-				$out += shipping($_, $opt) || 0;
+				my $m = shipping($_, $opt);
+				$out += $m if defined $m;
 			}
 		}
-		$out = Vend::Util::round_to_frac_digits($out);
-		## Conversion would have been done above, force to 0, as
-		## found by Frederic Steinfels
-		$out = currency($out, $opt->{noformat}, 0, $opt);
+		if (defined $out) {
+			$out = Vend::Util::round_to_frac_digits($out);
+			## Conversion would have been done above, force to 0, as
+			## found by Frederic Steinfels
+			$out = currency($out, $opt->{noformat}, 0, $opt);
+		}
 	}
 	return $out unless $opt->{hide};
 	return;
