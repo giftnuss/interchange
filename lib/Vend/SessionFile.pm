@@ -132,7 +132,14 @@ sub STORE {
 #::logDebug("locked $SessionFile");
 	}
 #::logDebug("storing in $SessionFile: " . ::uneval($ref));
-	Vend::Util::uneval_file($ref,$SessionFile);
+	eval {
+		Vend::Util::uneval_file($ref, $SessionFile);
+	};
+	if ($@) {
+		::logError("Error storing session %s: %s", $SessionFile, $@);
+#::logDebug(uneval_it($ref));
+	}
+	return 1;
 }
 	
 sub DESTROY {

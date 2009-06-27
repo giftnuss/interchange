@@ -177,14 +177,20 @@ sub DELETE {
 
 sub STORE {
 	my($self, $key, $val) = @_;
-	if( $key =~ s/^LOCK_//) {
+
+	if ($key =~ s/^LOCK_//) {
 		return $self->{LOCK_VALUE}{$key};
 	}
-	else {
-		$self->{DB}->set_field( $key, 'session', $val);
-		undef $self->{SESSION_VALUE}{$key};
-		return 1;
+
+	eval {
+		$self->{DB}->set_field($key, 'session', $val);
+	};
+	if ($@) {
+		::logError("Error storing session %s: %s", $key, $@);
+#::logDebug(uneval_it($val));
 	}
+	undef $self->{SESSION_VALUE}{$key};
+	return 1;
 }
 	
 1;

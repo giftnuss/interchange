@@ -364,8 +364,7 @@ sub write_session {
 	$Vend::Session->{login_table} = $Vend::login_table;
     $s = ! $File_sessions ? uneval_fast($Vend::Session) : $Vend::Session;
 #::logDebug("writing \$s of length " . length($s) . " to SessionDB");
-    $Vend::SessionDBM{$Vend::SessionName} = $s or 
-		die "Data was not stored in SessionDBM\n";
+    $Vend::SessionDBM{$Vend::SessionName} = $s;
     $Vend::Session->{'user'} = $save;
 }
 
