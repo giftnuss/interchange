@@ -196,7 +196,8 @@ EOF
 
 	my $extra = $opt->{state_extra} ? " $opt->{state_extra}" : '';
 	my $state_js = $opt->{state_js} ? "; $opt->{state_js}" : '';
-	$state_js =~ s|\bthis\.form\b|$v_formv|g;
+	my $country_js = $opt->{country_js} ? "; $opt->{country_js}" : '';
+	for($state_js,$country_js) { $_ =~ s|\bthis\.form\b|$v_formv|g; }
 
 	push @pre, <<EOF;
 	function ${cvar}_widget_adjust_state (cel,sval) {
@@ -295,7 +296,7 @@ EOF
 		$opt->{append} .= $append;
 	}
 
-	$opt->{js} = qq{ onLoad="${cvar}_widget_adjust_state(this)" onChange="${cvar}_widget_adjust_state(this)"};
+	$opt->{js} = qq{ onLoad="${cvar}_widget_adjust_state(this)" onChange="${cvar}_widget_adjust_state(this)$country_js"};
 	my @out;
 	#push @out, '<xmp>';
 	#push @out, ::uneval(\%states);
