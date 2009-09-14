@@ -195,8 +195,8 @@ EOF
 	$cvar =~ s/\W+/_/g;
 
 	my $extra = $opt->{state_extra} ? " $opt->{state_extra}" : '';
-	my $state_js = $opt->{state_js} ? " $opt->{state_js}" : '';
-	$state_js =~ s|this\.form|$v_formv|g;
+	my $state_js = $opt->{state_js} ? "; $opt->{state_js}" : '';
+	$state_js =~ s|\bthis\.form\b|$v_formv|g;
 
 	push @pre, <<EOF;
 	function ${cvar}_widget_adjust_state (cel,sval) {
@@ -229,7 +229,7 @@ EOF
 		}
 		var stary = $v_state_tary\[country];
 
-		var str = '<select name="$svar_in" onChange="$v_formv.$svar.value = this.value;$state_js">';
+		var str = '<select name="$svar_in" onChange="$v_formv.$svar.value = this.value$state_js"$extra>';
 		for(var i = 0; i < svary.length; i++) {
 			str += '<option value="' + svary[i] + '"';
 			if(svary[i] == sval)
